@@ -57,7 +57,7 @@ namespace ConsoleApp2
 
             for (int i = 0; i < numberOfCars; i++)
             {
-                Rides[i] = new List<int>();
+                Rides.Add(new List<int>());
             }
         }
     }
@@ -68,7 +68,24 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            InputData inputData = ReadInputFile(@"a_example.in");
+            InputData inputData = ReadInputFile(@"c_no_hurry.in");
+            //DisplayInputData(inputData);
+
+            var x = new Test();
+            var outputData = x.DoIt(inputData);
+
+            //var outputData = new OutputData();
+
+            //outputData.Rides.Add(new List<int> { 1, 0 });
+            //outputData.Rides.Add(new List<int> { 2, 1, 2 });
+
+            GenerateFile(outputData, "out.txt");
+
+            Console.ReadLine();
+        }
+
+        private static void DisplayInputData(InputData inputData)
+        {
             Console.Write(inputData.R + " " + inputData.C + "  " + inputData.F + " " + inputData.N + " " + inputData.B + " " + inputData.T);
             Console.WriteLine();
             for (int i = 0; i < inputData.N; i++)
@@ -77,15 +94,6 @@ namespace ConsoleApp2
                 Console.WriteLine();
 
             }
-
-            var outputData = new OutputData();
-
-            outputData.Rides.Add(new List<int> { 1, 0 });
-            outputData.Rides.Add(new List<int> { 2, 1, 2 });
-
-            GenerateFile(outputData, "out.txt");
-
-            Console.ReadLine();
         }
 
         private static void GenerateFile(OutputData outputData, string filePath)
@@ -93,9 +101,11 @@ namespace ConsoleApp2
 
             var file = new System.IO.StreamWriter(filePath);
             file.NewLine = "\n";
+            int ct = 0;
             foreach (var item in outputData.Rides)
             {
                 StringBuilder s = new StringBuilder();
+                s.Append(item.Count + " ");
                 foreach (var i in item)
                 {
                     s.Append(i + " ");
@@ -143,6 +153,7 @@ namespace ConsoleApp2
     public class MyProblemFitness : IFitness
     {
         private InputData input;
+        public OutputData OutputData { get; private set; }
         public MyProblemFitness(InputData input)
         {
             this.input = input;
@@ -152,17 +163,17 @@ namespace ConsoleApp2
             var myC = (MyProblemChromosome)chromosome;
             var genes = myC.GetGenes();
 
-            OutputData data = new OutputData(input.F);
-            for (int i = 0; i< genes.Length;i++)
+            OutputData = new OutputData(input.F);
+            for (int i = 0; i < genes.Length; i++)
             {
                 var car = Convert.ToInt32(genes[i].Value);
-                data.Rides[car].Add(i);
+                OutputData.Rides[car].Add(i);
             }
-            
-            return new Score(input, data).Compute();
+
+            return new Score(input, OutputData).Compute();
         }
     }
-    
+
     public class MyProblemChromosome : ChromosomeBase
     {
         // Change the argument value passed to base construtor to change the length 
@@ -195,22 +206,25 @@ namespace ConsoleApp2
 
     class Test
     {
-        public void DoIt(InputData inputData)
+        public OutputData DoIt(InputData inputData)
         {
             var selection = new EliteSelection();
-            var crossover = new OrderedCrossover();
+            var crossover = new OnePointCrossover();
             var mutation = new ReverseSequenceMutation();
             var fitness = new MyProblemFitness(inputData);
-            var chromosome = new MyProblemChromosome(inputData.F,inputData.N);
-            var population = new Population(50, 70, chromosome);
+            var chromosome = new MyProblemChromosome(inputData.F, inputData.N);
+            var population = new Population(50, 100, chromosome);
 
             var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
-            ga.Termination = new GenerationNumberTermination(100);
+            ga.Termination = new GenerationNumberTermination(1000);
 
             Console.WriteLine("GA running...");
             ga.Start();
-
-            Console.WriteLine("Best solution found has {0} fitness.", ga.BestChromosome.Fitness);
+            var x = ga.BestChromosome;
+            var output = new MyProblemFitness(inputData);
+            var res = output.Evaluate(ga.BestChromosome);
+            Console.WriteLine("Fitness..." + res);
+            return output.OutputData;
         }
     }
 }
