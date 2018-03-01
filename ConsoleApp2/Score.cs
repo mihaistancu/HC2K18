@@ -35,7 +35,11 @@ namespace ConsoleApp2
                     b = input.Rides[ride].B;
 
                     int bonus = 0;
-                    if (t == input.Rides[ride].S) bonus = input.B;
+                    if (t <= input.Rides[ride].S)
+                    {
+                        bonus = input.B;
+                        t = input.Rides[ride].S;
+                    }
 
                     int d = 0;
                     d += Math.Abs(input.Rides[ride].X - a);
@@ -51,7 +55,7 @@ namespace ConsoleApp2
                 }
             }
 
-            return 0;
+            return score;
         }
     }
 }

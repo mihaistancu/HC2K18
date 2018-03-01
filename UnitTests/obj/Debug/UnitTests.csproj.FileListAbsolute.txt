@@ -1,0 +1,8 @@
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\bin\Debug\UnitTests.dll
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\bin\Debug\UnitTests.pdb
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\bin\Debug\ConsoleApp2.exe
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\bin\Debug\ConsoleApp2.pdb
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\obj\Debug\UnitTests.csprojResolveAssemblyReference.cache
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\obj\Debug\UnitTests.dll
+C:\Users\mihai.stancu\Source\Repos\HC2K18\UnitTests\obj\Debug\UnitTests.pdb
