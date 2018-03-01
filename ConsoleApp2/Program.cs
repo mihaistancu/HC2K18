@@ -47,7 +47,7 @@ namespace ConsoleApp2
 
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args)  
         {  
             InputData inputData = ReadInputFile(@"a_example.in");
             Console.Write(inputData.R + " " + inputData.C + "  " + inputData.F + " " + inputData.N + " " + inputData.B + " " + inputData.T);
