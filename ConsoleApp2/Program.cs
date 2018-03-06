@@ -1,12 +1,6 @@
-﻿using GeneticSharp.Domain;
-using GeneticSharp.Domain.Chromosomes;
-using GeneticSharp.Domain.Crossovers;
+﻿using GeneticSharp.Domain.Chromosomes;
 using GeneticSharp.Domain.Fitnesses;
-using GeneticSharp.Domain.Mutations;
-using GeneticSharp.Domain.Populations;
 using GeneticSharp.Domain.Randomizations;
-using GeneticSharp.Domain.Selections;
-using GeneticSharp.Domain.Terminations;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +18,6 @@ namespace ConsoleApp2
         public int N { get; set; }
         public int B { get; set; }
         public int T { get; set; }
-
 
         public List<Ride> Rides { get; set; }
         public InputData()
@@ -70,7 +63,7 @@ namespace ConsoleApp2
         {
             InputData inputData = ReadInputFile(@"c_no_hurry.in");
             //DisplayInputData(inputData);
-
+            ComputeMaxScore(inputData);
             var x = new Test();
             var outputData = x.DoIt(inputData);
 
@@ -82,6 +75,16 @@ namespace ConsoleApp2
             GenerateFile(outputData, "out.txt");
 
             Console.ReadLine();
+        }
+
+        private static void ComputeMaxScore(InputData inputData)
+        {
+            int maxScore = 0;
+            foreach (var item in inputData.Rides)
+            {
+                maxScore += (Math.Abs(item.A - item.X) + Math.Abs(item.B - item.Y)) + inputData.B;
+            }
+            Console.WriteLine("Max score=" + maxScore);
         }
 
         private static void DisplayInputData(InputData inputData)
@@ -96,7 +99,7 @@ namespace ConsoleApp2
             }
         }
 
-        private static void GenerateFile(OutputData outputData, string filePath)
+        public static void GenerateFile(OutputData outputData, string filePath)
         {
 
             var file = new System.IO.StreamWriter(filePath);
@@ -201,30 +204,6 @@ namespace ConsoleApp2
         public override IChromosome CreateNew()
         {
             return new MyProblemChromosome(numberOfCars, numberOfRides);
-        }
-    }
-
-    class Test
-    {
-        public OutputData DoIt(InputData inputData)
-        {
-            var selection = new EliteSelection();
-            var crossover = new OnePointCrossover();
-            var mutation = new ReverseSequenceMutation();
-            var fitness = new MyProblemFitness(inputData);
-            var chromosome = new MyProblemChromosome(inputData.F, inputData.N);
-            var population = new Population(50, 100, chromosome);
-
-            var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
-            ga.Termination = new GenerationNumberTermination(1000);
-
-            Console.WriteLine("GA running...");
-            ga.Start();
-            var x = ga.BestChromosome;
-            var output = new MyProblemFitness(inputData);
-            var res = output.Evaluate(ga.BestChromosome);
-            Console.WriteLine("Fitness..." + res);
-            return output.OutputData;
         }
     }
 }
